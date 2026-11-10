@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#050816">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Moonwick - a hand-crafted 2D metroidvania about a small lantern in a large dark. Plays in your browser on phone or computer.">
+<title>Moonwick</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <canvas id="game" aria-label="Moonwick game view"></canvas>
+
+    <div id="hud" class="hidden" aria-hidden="true">
+      <div class="hud-tl">
+        <div id="hp" class="hp"></div>
+        <div class="hud-row">
+          <div id="lumen" class="lumen hidden"><i></i></div>
+          <div id="vials" class="vials"></div>
+        </div>
+      </div>
+      <div class="hud-tr"><span class="mote-ico"></span><span id="motes">0</span></div>
+      <div id="bossbar" class="bossbar hidden"><div id="bossname"></div><div class="bbar"><i id="bosshp"></i></div></div>
+      <div id="areatitle" class="areatitle"><div class="at-name"></div><div class="at-sub"></div></div>
+      <div id="bosstitle" class="bosstitle"></div>
+      <div id="hint" class="hint"></div>
+      <div id="prompt" class="prompt"></div>
+      <div id="toast" class="toast"><b></b><span></span></div>
+      <div id="timer" class="timer hidden"></div>
+    </div>
+
+    <div id="dialog" class="dialog hidden" role="dialog" aria-live="polite">
+      <div id="dlg-name" class="dlg-name"></div>
+      <div id="dlg-text" class="dlg-text"></div>
+      <div class="dlg-next">&#9660;</div>
+    </div>
+
+    <div id="deathmsg" class="deathmsg">Your light went out</div>
+  </div>
+
+  <div id="touch" class="hidden">
+    <div id="stick-zone"><div id="stick-base"><div id="stick-knob"></div></div></div>
+    <button class="tbtn t-jump" data-act="jump" aria-label="Jump">Jump</button>
+    <button class="tbtn t-attack" data-act="attack" aria-label="Strike">Strike</button>
+    <button class="tbtn t-dash hidden" data-act="dash" aria-label="Dash">Dash</button>
+    <button class="tbtn t-spell hidden" data-act="spell" aria-label="Spell">Spell</button>
+    <button class="tbtn t-heal" data-act="heal" aria-label="Sip dew">Sip</button>
+    <button class="tbtn t-small t-pause" data-act="pause" aria-label="Pause">II</button>
+    <button class="tbtn t-small t-map" data-act="map" aria-label="Map and gear">Map</button>
+    <button class="tpill hidden" id="t-interact" data-act="interact">Rest</button>
+  </div>
+
+  <!-- ===================== menus ===================== -->
+  <section id="s-title" class="screen hidden">
+    <div class="title-wrap">
+      <h1 class="logo">MOONWICK</h1>
+      <p class="tagline">A small light in a large dark</p>
+      <nav class="menu">
+        <button class="btn" id="btn-continue">Continue</button>
+        <button class="btn" id="btn-start">New Game / Load</button>
+        <button class="btn" id="btn-options">Options</button>
+        <button class="btn" id="btn-help">How to Play</button>
+      </nav>
+      <p class="fine" id="title-fine"></p>
+    </div>
+  </section>
+
+  <section id="s-slots" class="screen hidden">
+    <div class="panel">
+      <h2>Choose a Journey</h2>
+      <div id="slots" class="slots"></div>
+      <div class="panel-foot"><button class="btn ghost" data-back>Back</button></div>
+    </div>
+  </section>
+
+  <section id="s-options" class="screen hidden">
+    <div class="panel">
+      <h2>Options</h2>
+      <div class="opts">
+        <label class="opt"><span>Music</span><input type="range" id="o-music" min="0" max="100" step="5"></label>
+        <label class="opt"><span>Sound</span><input type="range" id="o-sfx" min="0" max="100" step="5"></label>
+        <div class="opt"><span>Screen shake</span><button class="btn cyc" id="o-shake"></button></div>
+        <div class="opt"><span>Graphics</span><button class="btn cyc" id="o-quality"></button></div>
+        <div class="opt"><span>Touch buttons</span><button class="btn cyc" id="o-touch"></button></div>
+        <div class="opt"><span>Touch button size</span><button class="btn cyc" id="o-tsize"></button></div>
+        <div class="opt"><span>Speedrun timer</span><button class="btn cyc" id="o-timer"></button></div>
+        <div class="opt"><span>Keyboard</span><button class="btn cyc" id="o-keys">Change keys</button></div>
+        <div class="opt"><span>Full screen</span><button class="btn cyc" id="o-full">Toggle</button></div>
+      </div>
+      <div class="panel-foot"><button class="btn ghost" data-back>Back</button></div>
+    </div>
+  </section>
+
+  <section id="s-keys" class="screen hidden">
+    <div class="panel">
+      <h2>Keyboard</h2>
+      <p class="fine">Choose an action, then press the key you want for it.</p>
+      <div id="keys" class="keys"></div>
+      <div class="panel-foot"><button class="btn ghost" id="keys-reset">Reset to defaults</button><button class="btn ghost" data-back>Back</button></div>
+    </div>
+  </section>
+
+  <section id="s-help" class="screen hidden">
+    <div class="panel">
+      <h2>How to Play</h2>
+      <div id="help" class="help"></div>
+      <div class="panel-foot"><button class="btn ghost" data-back>Back</button></div>
+    </div>
+  </section>
+
+  <section id="s-pause" class="screen hidden">
+    <div class="panel narrow">
+      <h2>Paused</h2>
+      <nav class="menu">
+        <button class="btn" id="p-resume">Resume</button>
+        <button class="btn" id="p-map">Map &amp; Gear</button>
+        <button class="btn" id="p-options">Options</button>
+        <button class="btn" id="p-help">How to Play</button>
+        <button class="btn" id="p-quit">Save &amp; Quit</button>
+      </nav>
+    </div>
+  </section>
+
+  <section id="s-inv" class="screen hidden">
+    <div class="panel wide">
+      <div class="tabs">
+        <button class="btn tab" data-tab="map">Map</button>
+        <button class="btn tab" data-tab="gear">Gear</button>
+        <button class="btn tab" data-tab="journal">Journal</button>
+        <button class="btn ghost tab-close" data-back>Close</button>
+      </div>
+      <div id="tab-map" class="tabpane"><canvas id="mapcv"></canvas><div id="map-legend" class="fine"></div></div>
+      <div id="tab-gear" class="tabpane hidden"></div>
+      <div id="tab-journal" class="tabpane hidden"></div>
+    </div>
+  </section>
+
+  <section id="s-shop" class="screen hidden">
+    <div class="panel">
+      <h2 id="shop-title">Wares</h2>
+      <div class="shop-purse"><span class="mote-ico"></span><span id="shop-motes">0</span></div>
+      <div id="shop-list" class="shop-list"></div>
+      <div class="panel-foot"><button class="btn ghost" data-back>Leave</button></div>
+    </div>
+  </section>
+
+  <section id="s-card" class="screen hidden">
+    <div class="card">
+      <div class="card-kicker" id="card-kicker"></div>
+      <h2 id="card-title"></h2>
+      <p id="card-how"></p>
+      <p id="card-lore" class="fine"></p>
+      <button class="btn" id="card-ok">Continue</button>
+    </div>
+  </section>
+
+  <section id="s-confirm" class="screen hidden">
+    <div class="panel narrow">
+      <h2 id="confirm-title">Are you sure?</h2>
+      <p id="confirm-text" class="fine"></p>
+      <nav class="menu"><button class="btn" id="confirm-no">Cancel</button><button class="btn danger" id="confirm-yes">Yes</button></nav>
+    </div>
+  </section>
+
+  <section id="s-intro" class="screen hidden">
+    <div class="intro"><p id="intro-text"></p><div class="fine" id="intro-skip"></div></div>
+  </section>
+
+  <section id="s-end" class="screen hidden">
+    <div class="panel narrow">
+      <div id="end-text" class="endtext"></div>
+      <nav class="menu"><button class="btn" id="end-ok">Return to Title</button></nav>
+    </div>
+  </section>
+
+  <div id="rotate" class="rotate hidden">Turn your phone sideways for a wider view</div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
