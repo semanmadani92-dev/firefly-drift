@@ -321,6 +321,8 @@ export const UI = {
       + '<p class="fine">Your journey is saved. Continue it to keep exploring.</p>';
     this.showHud(false);
     this.open('s-end');
+    const panel = $('s-end').querySelector('.panel');
+    requestAnimationFrame(() => { panel.scrollTop = 0; });
   },
 
   // ------------------------------------------------------------ save slots

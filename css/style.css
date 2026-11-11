@@ -200,4 +200,5 @@ h2 { font: 700 20px var(--display); letter-spacing: 0.18em; text-transform: uppe
 .endtext h2 { font-size: 30px; }
 .endtext p { margin: 0 0 10px; }
 .endtext .endstats { margin: 16px 0; color: var(--gold, #f0c060); font-size: 16px; }
-#s-end .panel { max-height: 92vh; overflow-y: auto; }
+#s-end .panel { width: min(700px, 94vw); max-width: none; max-height: 92vh; overflow-y: auto; }
+@media (max-height: 520px) { .endtext { font-size: 15px; line-height: 1.45; } .endtext h2 { font-size: 22px; margin: 0 0 6px; } .endtext p { margin: 0 0 6px; } .endtext .endstats { margin: 6px 0; } .endtext p.fine { margin: 0 0 2px; } #s-end .panel { padding: 10px 16px; } #s-end .menu { margin-top: 6px; } }
