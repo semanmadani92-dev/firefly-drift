@@ -18,6 +18,11 @@ python3 -m http.server 8080
 
 On GitHub Pages it works as-is: Settings > Pages > Deploy from a branch > `main`, folder `/`.
 
+### One-file version
+
+`moonwick.html` is the whole game in a single file: download it and double-click it,
+no server needed. Rebuild it after changes with `node tools/build-single.mjs`.
+
 ## Controls
 
 | Action | Keyboard | Gamepad | Touch |
