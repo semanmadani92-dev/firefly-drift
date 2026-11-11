@@ -110,7 +110,7 @@ html, body {
   #app.touch-on .hud-tr { right: calc(16px + var(--sar)); }
   #app.touch-on .tpill { bottom: auto; top: 12px; }
 }
-.rotate { position: fixed; left: 50%; top: calc(10px + var(--sat)); transform: translateX(-50%); z-index: 30; padding: 7px 16px; border-radius: 999px; background: rgba(5, 8, 20, 0.9); border: 1px solid var(--line); font: 13px var(--body); color: var(--mute); pointer-events: none; white-space: nowrap; }
+.rotate { position: fixed; left: 50%; top: calc(min(82vw, 52dvh) + 64px); transform: translateX(-50%); z-index: 30; padding: 7px 16px; border-radius: 999px; background: rgba(5, 8, 20, 0.9); border: 1px solid var(--line); font: 13px var(--body); color: var(--mute); pointer-events: none; white-space: nowrap; }
 
 /* ---------------------------------------------------------------- menus */
 .screen { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: rgba(3, 5, 13, 0.74); padding: max(12px, var(--sat)) max(12px, var(--sar)) max(12px, var(--sab)) max(12px, var(--sal)); overflow: auto; touch-action: pan-y; }

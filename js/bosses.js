@@ -49,6 +49,10 @@ export class Boss extends Enemy {
     Sound.play('roar'); shake(10, 1.0);
     this.setState('intro');
     G.ui.bossIntro(this.name);
+    G.cam.focus = { x: this.cx, y: this.cy - 40 };
+    const p = G.player;
+    if (p) { p.ctlLock = Math.max(p.ctlLock, 1.6); p.vx = 0; }
+    G.game.after(1.6, () => { G.cam.focus = null; });
   }
   hurt(dmg, dx, src) {
     if (this.state === 'dying' || this.state === 'intro') return false;

@@ -238,7 +238,11 @@ export function updateCamera(dt, snap) {
   if (!r) return;
   let fx = r.pxW / 2, fy = r.pxH / 2, face = 0;
   if (c.focus) { fx = c.focus.x; fy = c.focus.y; }
-  else if (p) { fx = p.x + p.w / 2; fy = p.y + p.h / 2; face = p.facing; }
+  else if (p) {
+    fx = p.x + p.w / 2; fy = p.y + p.h / 2; face = p.facing;
+    const b = G.boss; // during boss fights, lean the view toward the boss so it is never a surprise
+    if (b && !b.dead) { fx += clamp((b.cx - fx) * 0.45, -view.w * 0.3, view.w * 0.3); face = 0; }
+  }
   c.look = snap ? face * 48 : approach(c.look || 0, face * 48, 150 * dt);
   let tx = fx + c.look - view.w / 2;
   let ty = fy - view.h * 0.56 + (c.lookY || 0);
