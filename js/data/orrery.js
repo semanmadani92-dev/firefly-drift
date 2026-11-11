@@ -34,7 +34,7 @@ export const ORRERY = [
   // ---------------------------------------------------------------- o6 Star Archive (hidden behind the hollow wall)
   {
     id: 'o6', area: 'orrery', name: 'Star Archive', gx: 7, gy: 7,
-    key: K({ R: { t: 'item', item: 'relic', relic: 'steadyflame' }, M: { t: 'item', item: 'shard' }, T: { t: 'tablet', id: 'gears' } }),
+    key: K({ R: { t: 'item', item: 'relic', relic: 'steadyflame' }, M: { t: 'item', item: 'shard' }, Q: { t: 'item', item: 'glass' }, T: { t: 'tablet', id: 'gears' } }),
     rows: [
       WALL, WALL, WALL,
       '####......................####',
@@ -47,7 +47,7 @@ export const ORRERY = [
       '###........................###',
       '###...........................',
       '###...........................',
-      '###..R....M.....T.............',
+      '###..R....M.....T...Q.........',
       WALL, WALL, WALL,
     ],
   },

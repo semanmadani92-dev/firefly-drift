@@ -56,6 +56,11 @@ export const NPCS = {
   tallow: {
     name: 'Old Tallow',
     lines(S) {
+      if (S.flags.ended) return [
+        'Look at that. Look at the ground, little Wick. I have a shadow. I had forgotten I was tall.',
+        'The Moon is small yet. It will take a long while to grow. But it is up, and it knows the way home now.',
+        'Rest when you like. There are still dark corners down there, and you are the only one who was ever any good at them.',
+      ];
       if (!S.flags.met_tallow) return [
         'Ah... a new flame. And such a small one.',
         'I am Tallow. I was a tall candle once, when the Moon still hung where it should.',

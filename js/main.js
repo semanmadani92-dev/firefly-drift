@@ -80,7 +80,12 @@ function checkTransition() {
     let nx = nb.x - p.w / 2, ny = nb.y - p.h / 2;
     if (dir === 'L') nx = nb.def.w * T - p.w - 6;
     else if (dir === 'R') nx = 6;
-    else if (dir === 'U') { ny = nb.def.h * T - p.h - 4; p.vy = -PHYS.enterBoost; p.jumping = false; }
+    else if (dir === 'U') {
+      ny = nb.def.h * T - p.h - 4; p.vy = -PHYS.enterBoost; p.jumping = false;
+      // a cracked floor gives way if you come up underneath it
+      const ctx2 = Math.floor((nx + p.w / 2) / T);
+      for (let ty = G.room.h - 1; ty >= G.room.h - 4; ty--) if (G.room.tile(ctx2, ty) === TILE.SLAM) { game.breakGroup(ctx2, ty); break; }
+    }
     else ny = 4;
     p.x = nx; p.y = ny;
     if (p.state === 'dash' || p.state === 'slam') { p.state = 'normal'; p.ghost = false; }

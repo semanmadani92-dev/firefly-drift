@@ -2,7 +2,7 @@
 export const T = 32;            // tile size in world pixels
 export const CELL_W = 30;       // tiles per map cell (one "screen")
 export const CELL_H = 17;
-export const VERSION = '0.1.0';
+export const VERSION = '1.0.0';
 
 export const TILE = { EMPTY: 0, SOLID: 1, ONEWAY: 2, SPIKE: 3, LIQUID: 4, BREAK: 5, SLAM: 6, GRATE: 7 };
 

@@ -39,15 +39,25 @@ Keys can be changed in Options > Keyboard.
 - `index.html`, `css/style.css` - page, HUD and menus
 - `js/main.js` - game loop, room loading, rest / death / save events
 - `js/player.js` - Wick: movement, matchblade, dash, spells, healing
-- `js/enemies.js`, `js/bosses.js` - creatures and bosses
+- `js/enemies.js` ... `js/enemies5.js`, `js/bosses.js` - creatures and bosses, one file per area
+- `js/entities2.js` - machinery: flame jets, lifts, saws, crumbling ledges, pale barriers
 - `js/entities.js` - lanterns, pickups, gates, levers, characters, projectiles
 - `js/terrain.js`, `js/gfx.js` - procedural art, lighting, particles, camera
 - `js/audio.js` - synthesised sound effects and music
 - `js/ui.js`, `js/input.js`, `js/save.js` - menus, controls, save slots
 - `js/data/` - rooms (drawn as text maps), dialogue, items
 - `tools/validate.mjs` - checks that every room is well-formed and doors line up
+- `tools/reach.mjs` - replays the real player physics in every room to prove the game
+  can be finished and that each ability gate really needs its ability
 - `tools/smoke.mjs`, `tools/shot.mjs` - headless browser tests / screenshots
+
+## The journey
+
+Six areas, 46 rooms, five bosses and an ending:
+Candlestead and the Gloamwood, the Sunken Stacks, the Emberworks, Starwell and the
+Hushed Orrery. Six abilities open the world up as you find them: Comet Dash, Starshot,
+Quillhook, Second Wind, Meteor and Eclipse.
 
 ## Status
 
-See `PROGRESS.md` for what is finished and what comes next.
+Version 1.0: complete from the first lantern to the ending. See `PROGRESS.md`.

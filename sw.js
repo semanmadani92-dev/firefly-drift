@@ -1,6 +1,6 @@
 // Offline support. Always tries the network first (so updates show up at once)
 // and falls back to the last copy it saw when there is no connection.
-const CACHE = 'moonwick-v1';
+const CACHE = 'moonwick-v2';
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', 'index.html'])).then(() => self.skipWaiting()));
 });
