@@ -198,3 +198,6 @@ h2 { font: 700 20px var(--display); letter-spacing: 0.18em; text-transform: uppe
 .intro p { font: italic clamp(20px, 3.6vw, 30px)/1.5 var(--body); color: #e6e9f8; min-height: 3em; transition: opacity 0.6s; }
 .endtext { font: 18px/1.6 var(--body); text-align: center; margin-bottom: 16px; }
 .endtext h2 { font-size: 30px; }
+.endtext p { margin: 0 0 10px; }
+.endtext .endstats { margin: 16px 0; color: var(--gold, #f0c060); font-size: 16px; }
+#s-end .panel { max-height: 92vh; overflow-y: auto; }

@@ -120,6 +120,37 @@ export const NPCS = {
       return ['Shard and motes, and I will make that match of yours into something worth swinging.'];
     },
   },
+  glint: {
+    name: 'Glint',
+    shop: 'glint',
+    lines(S) {
+      if (!S.flags.met_glint) return [
+        'Oh! Mind the edges, mind the edges. Everything down here is edges.',
+        'I am Glint. I was a window once. Then the Moon came through me, and here I am, in quite a few more pieces than I started with.',
+        'The Mirror Pool is below the Glimmer Well. Do not look into it. It looked into me and now there are two of everything I regret.',
+        'I sell what washes up. Motes only. I can see my own reflection in them, which is a comfort.',
+      ];
+      if (S.flags.boss_echo) return ['You walked out of the Mirror Pool and only one of you came back. Good. I was not sure which one it would be.'];
+      return ['Edges, edges. Buy something round for a change.'];
+    },
+  },
+  vesper2: {
+    name: 'Vesper',
+    lines(S) {
+      if (S.flags.boss_hollowmoon) return [
+        'It is so bright. I had forgotten what my own hands looked like.',
+        'Go home, warm one. I think... I think I will follow, this time.',
+      ];
+      if (!S.flags.met_vesper2) return [
+        '...Warm one. You came all the way down.',
+        'I told you I was not certain I was looking for the way back. I was not. I was looking for this.',
+        'The Moon is past the last lantern. The Hush sits inside it and wears its face. It will show you a sky that is not there.',
+        'I could not strike it. I only ever had the dark for company, and it is hard to raise a hand against company.',
+        'You are not alone the way I was. Every lantern you lit is still burning behind you. Remember that, when it gets quiet.',
+      ];
+      return ['Past the last lantern. Do not listen to the sky it shows you.'];
+    },
+  },
   vesper: {
     name: 'Vesper',
     lines(S) {
@@ -135,6 +166,12 @@ export const NPCS = {
 };
 
 export const TABLETS = {
+  well: { title: 'Frost-Bright Stone', text: ['"When the Moon fell it broke, and the pieces that would not go dark sank here."', '"We named the place Starwell. The light pools, and it remembers whoever looks into it."'] },
+  mirror: { title: 'Mirror Stone', text: ['"Do not look long into the pool. It keeps what it sees."', '"What it keeps will stand up one day, and want its place back."'] },
+  pale: { title: 'Pale Stone', text: ['"The walls of pale light let nothing solid through."', '"Only a shadow passes. Learn to be one, for the length of a breath."'] },
+  orrery: { title: 'Brass Stone', text: ['"Here the first lamplighters built a model of the sky, so the Moon would always know its way home."', '"The model still turns. The sky it copied does not."'] },
+  gears: { title: 'Engraved Stone', text: ['"We counted a thousand nights by these wheels, and then we stopped counting."', '"If you are reading this by your own light: thank you for coming."'] },
+  lastdoor: { title: 'Last Stone', text: ['"The Moon is below. It is not dead. It is only very, very tired."', '"The Hush has wrapped itself around it like a coat. Take the coat off."'] },
   cooling: { title: 'Soot-Black Stone', text: ['"The Emberworks forged the frame that held the Moon in the sky."', '"When it fell, we were told to let the fires die. The fires were not told."'] },
   bellows: { title: 'Brass-Bound Stone', text: ['"The first bellows drew one breath and has been holding it ever since."', '"Take it. Something should finally come of all that waiting."'] },
   works: { title: 'Foreman\'s Stone', text: ['"The Hammerwright does not stop. It was never taught how."', '"It is still forging a new Moon. It has been getting the shape wrong for a thousand years."'] },
@@ -149,6 +186,12 @@ export const TABLETS = {
 };
 
 export const BESTIARY = {
+  hollowmoon: { name: 'The Hollow Moon', desc: 'The Hush, wearing the fallen Moon like a coat. Underneath, something was still trying to shine.' },
+  prismite: { name: 'Prismite', desc: 'A beetle grown from cave-glass. Strike it once and it curls into a ball of edges - wait for it to uncurl.' },
+  orbiter: { name: 'Orbiter', desc: 'A small sad core that keeps three shards circling it, so that nothing can come close again.' },
+  wisp: { name: 'Hush Wisp', desc: 'A breath of the quiet. Walls do not stop it. It can only be struck in the moments it remembers to be real.' },
+  lancer: { name: 'Crystal Lancer', desc: 'It levels its lance, waits one heartbeat, and crosses the room. Be above it when it does.' },
+  echo: { name: 'The Echo', desc: 'The Mirror Pool looked at you for a long time. Then it stood up.' },
   cinderling: { name: 'Cinderling', desc: 'A coal with legs and no patience. It runs straight at anything cooler than itself.' },
   bellowsback: { name: 'Bellowsback', desc: 'It breathes in for a long moment. Be somewhere else when it breathes out.' },
   emberfly: { name: 'Emberfly', desc: 'It carries slag from the furnaces and lets go of it directly above whoever looks up.' },
@@ -169,6 +212,15 @@ export const BESTIARY = {
 };
 
 export const SHOPS = {
+  glint: [
+    { id: 'chart_ember', kind: 'chart', area: 'ember', name: 'Chart of the Emberworks', desc: 'Reveals every room of the Emberworks on your map.', price: 110 },
+    { id: 'chart_starwell', kind: 'chart', area: 'starwell', name: 'Chart of Starwell', desc: 'Reveals every room of Starwell on your map.', price: 130 },
+    { id: 'glass_1', kind: 'glass', name: 'Lumen Glass', desc: 'Carry more lumen for spells.', price: 280 },
+    { id: 'seed_3', kind: 'seed', name: 'Ember Seed', desc: 'One third of a new ember of health.', price: 340 },
+    { id: 'r_quickstrike', kind: 'relic', relic: 'quickstrike', price: 380 },
+    { id: 'vial_2', kind: 'vial', name: 'Dew Vial', desc: 'Carry one more sip of healing dew.', price: 420 },
+    { id: 'slot_2', kind: 'slot', name: 'Relic Knot', desc: 'Bear one more relic at a time.', price: 520 },
+  ],
   folio: [
     { id: 'chart_stacks', kind: 'chart', area: 'stacks', name: 'Chart of the Sunken Stacks', desc: 'Reveals every room of the Stacks on your map.', price: 90 },
     { id: 'r_brightcore', kind: 'relic', relic: 'brightcore', price: 240 },
@@ -190,6 +242,13 @@ export const INTRO = [
   'It sank beneath the roots of the Gloamwood and its light went out.',
   'In Candlestead, the lamplings kept one last spark alive.',
   'Tonight, that spark opened its eyes.',
+];
+
+export const ENDING = [
+  'The coat of quiet came apart in your hands.',
+  'Underneath, the Moon was small and cold and still, very faintly, awake.',
+  'You had carried one spark down through the roots of the world. You gave it back.',
+  'Far above, in Candlestead, Old Tallow looked up - and for the first time in a thousand years, had a shadow.',
 ];
 
 export const CREDITS = [

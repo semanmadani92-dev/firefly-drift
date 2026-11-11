@@ -5,7 +5,7 @@ import { Sound } from './audio.js';
 import { saveSettings, readSlot, deleteSlot, has, flag, setFlag } from './save.js';
 import { AREAS, CELL_W, CELL_H, VERSION } from './config.js';
 import { ROOMS, CELLS, cellEdges } from './world.js';
-import { RELICS, ABILITIES, BESTIARY, TABLETS, SHOPS, INTRO } from './data/text.js';
+import { RELICS, ABILITIES, BESTIARY, TABLETS, SHOPS, INTRO, ENDING, CREDITS } from './data/text.js';
 import { giveItem } from './entities.js';
 import { fmtTime, clamp } from './util.js';
 import { resize } from './gfx.js';
@@ -310,6 +310,18 @@ export const UI = {
     setTimeout(() => { el.textContent = INTRO[it.i]; el.style.opacity = 1; }, 250);
   },
   introTick(dt) { const it = this.intro; if (it) { it.t += dt; if (it.t > 4.2) this.introNext(); } },
+
+  // ------------------------------------------------------------ ending
+  showEnding(S) {
+    const h = Math.floor(S.played / 3600), m = Math.floor(S.played / 60) % 60;
+    const time = h ? `${h} h ${m} min` : `${m} min`;
+    $('end-text').innerHTML = '<h2>Moonrise</h2>' + ENDING.map((l) => `<p>${esc(l)}</p>`).join('')
+      + `<p class="endstats">Time ${time} &nbsp;·&nbsp; Fallen ${S.deaths} time${S.deaths === 1 ? '' : 's'} &nbsp;·&nbsp; ${completion()}% found</p>`
+      + CREDITS.slice(1).map((l) => `<p class="fine">${esc(l)}</p>`).join('')
+      + '<p class="fine">Your journey is saved. Continue it to keep exploring.</p>';
+    this.showHud(false);
+    this.open('s-end');
+  },
 
   // ------------------------------------------------------------ save slots
   renderSlots() {

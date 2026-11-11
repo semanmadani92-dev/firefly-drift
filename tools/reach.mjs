@@ -288,7 +288,7 @@ let bad = 0;
 
 const STAGES = process.argv.includes('--stages');
 if (STAGES) console.log('== Stage check: what can be reached with exactly these abilities ==');
-const stages = !STAGES ? [] : [[], ['dash'], ['dash', 'shot'], ['dash', 'shot', 'grip'], ['dash', 'shot', 'djump'], ['dash', 'shot', 'grip', 'djump'], ['dash', 'shot', 'grip', 'djump', 'slam'], ['dash', 'shot', 'grip', 'djump', 'slam', 'eclipse']];
+const stages = !STAGES ? [] : [[], ['dash'], ['dash', 'shot'], ['dash', 'shot', 'grip'], ['dash', 'shot', 'djump'], ['dash', 'shot', 'grip', 'djump'], ['dash', 'shot', 'grip', 'slam'], ['dash', 'shot', 'djump', 'slam'], ['dash', 'shot', 'grip', 'djump', 'slam'], ['dash', 'shot', 'grip', 'djump', 'slam', 'eclipse']];
 let prev = new Set();
 for (const st of stages) {
   const fa = {}; for (const a of st) fa[a] = 1;
@@ -314,6 +314,8 @@ const GATES = [
   { name: 'Gloamwood dash gaps', have: [], cannot: ['g6', 'g7', 'g8', 'gB'] },
   { name: 'the Spine needs the Quillhook', have: ['dash', 'shot'], cannot: ['sB', 's8'] },
   { name: 'the Forgeheart needs Second Wind or the Quillhook', have: ['dash', 'shot'], cannot: ['eB'] },
+  { name: 'Starwell needs the Meteor', have: ['dash', 'shot', 'grip', 'djump'], cannot: ['w1', 'w7', 'w5', 'wB'] },
+  { name: 'the Orrery needs the Eclipse', have: ['dash', 'shot', 'grip', 'djump', 'slam'], cannot: ['o1', 'o2', 'oB'] },
 ];
 if (process.argv.includes('--gates')) {
   console.log('\n== Gate checks (frame-perfect play) ==');

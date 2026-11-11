@@ -587,7 +587,20 @@ function drawFlint(c, x, y, t) {
   if (Math.random() < 0.08) spawnP({ x: x + rand(-3, 3), y: y - 54, vy: -rand(30, 80), vx: rand(-10, 10), life: rand(0.5, 1), size: 1.8, color: '#ffae5a', wob: 30 });
   addLight(x, y - 22, 130, '#ff9440', 0.32, 0.9);
 }
-const NPC_DRAW = { tallow: drawTallow, sconce: drawSconce, vesper: drawVesper, folio: drawFolio, flint: drawFlint };
+function drawGlint(c, x, y, t) { // a lampling made of window-glass shards
+  const bob = Math.sin(t * 1.7) * 1.5;
+  c.fillStyle = '#141a3a'; c.fillRect(x - 9, y - 5, 6, 5); c.fillRect(x + 3, y - 5, 6, 5);
+  const sh = [[-14, -8, -4, -46, 4, -8], [-2, -6, 8, -52, 14, -8], [-18, -6, -16, -30, -8, -8], [10, -6, 18, -34, 20, -8]];
+  sh.forEach(([ax, ay, bx, by, cx2, cy2], i) => {
+    c.fillStyle = ['rgba(192,244,255,0.34)', 'rgba(255,154,224,0.28)', 'rgba(192,244,255,0.22)', 'rgba(201,194,255,0.3)'][i];
+    c.beginPath(); c.moveTo(x + ax, y + ay + bob); c.lineTo(x + bx, y + by + bob); c.lineTo(x + cx2, y + cy2 + bob); c.closePath(); c.fill();
+    c.strokeStyle = 'rgba(232,250,255,0.9)'; c.lineWidth = 1.2; c.stroke();
+  });
+  drawFlame(c, x, y - 18 + bob, 10, '#c0f4ff', t + 5, '#ffffff');
+  c.fillStyle = '#ffffff'; ell(c, x - 4, y - 28 + bob, 1.6, 2.4); c.fill(); ell(c, x + 5, y - 28 + bob, 1.6, 2.4); c.fill();
+  addLight(x, y - 22, 130, '#c0f4ff', 0.3, 0.85);
+}
+const NPC_DRAW = { tallow: drawTallow, sconce: drawSconce, vesper: drawVesper, folio: drawFolio, flint: drawFlint, glint: drawGlint };
 class Npc extends Entity {
   constructor(x, y, spec) {
     super(x - 20, y - 56, 40, 56);

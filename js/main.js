@@ -14,6 +14,8 @@ import './enemies.js';
 import './bosses.js';
 import './enemies2.js';
 import './enemies3.js';
+import './enemies4.js';
+import './enemies5.js';
 import './entities2.js';
 import { NPCS } from './data/text.js';
 import { ALL_ROOMS, START_ROOM, TITLE_ROOM } from './data/rooms.js';
@@ -137,6 +139,7 @@ const game = {
   quitToTitle(noSave) {
     if (!noSave && G.save && G.mode === 'play') writeSave();
     UI.closeAll(); UI.showHud(false); UI.deathMsg(false);
+    G.flash.hold = 0; G.flash.a = 0;
     G.save = null; G.player = null; G.mode = 'title'; G.timeScale = 1;
     timers.length = 0;
     enterTitle();
@@ -232,6 +235,20 @@ const game = {
       fadeTo(0, 1.2);
       if (firstDeath) after(1.5, () => UI.toast('Your motes wait where you fell. Reach them before you fall again.', 'Lost light', 5000));
     });
+  },
+
+  // The spark goes back into the Moon: white-out, then the ending screen.
+  ending(src) {
+    const S = G.save, p = G.player;
+    if (G.mode !== 'play') return;
+    setFlag('ended');
+    p.ctlLock = 99; p.vx = 0; p.inv = 99;
+    Sound.music('ending'); Sound.play('big'); shake(8, 1.2);
+    burst(src.bx, src.by - 76, 80, { color: ['#ffffff', '#fff6d8', '#f0dca0'], s0: 60, s1: 520, l0: 0.8, l1: 2.2, drag: 1.2 });
+    ring(src.bx, src.by - 76, '#ffffff', 14, 700, 1.2);
+    writeSave();
+    after(1.4, () => { G.flash.color = '#fffbe8'; G.flash.hold = 1; });
+    after(3.2, () => { G.mode = 'ending'; UI.showEnding(S); });
   },
 
   hitBreakable(tx, ty) {
@@ -372,7 +389,8 @@ function render(dt) {
   if (G.save && G.save.hp === 1 && G.mode === 'play') { // danger pulse
     c.globalAlpha = 0.07 + Math.abs(Math.sin(G.now * 3)) * 0.07; c.fillStyle = HAZ; c.fillRect(0, 0, view.bw, view.bh);
   }
-  if (G.flash.a > 0.01) { c.globalAlpha = Math.min(1, G.flash.a); c.fillStyle = G.flash.color; c.fillRect(0, 0, view.bw, view.bh); G.flash.a = Math.max(0, G.flash.a - dt * 2.6); }
+  if (G.flash.hold) G.flash.a = Math.min(1, G.flash.a + dt * 1.2);
+  if (G.flash.a > 0.01) { c.globalAlpha = Math.min(1, G.flash.a); c.fillStyle = G.flash.color; c.fillRect(0, 0, view.bw, view.bh); if (!G.flash.hold) G.flash.a = Math.max(0, G.flash.a - dt * 2.6); }
   if (G.fade.a > 0.005) { c.globalAlpha = Math.min(1, G.fade.a); c.fillStyle = '#000'; c.fillRect(0, 0, view.bw, view.bh); }
   c.globalAlpha = 1;
 }
