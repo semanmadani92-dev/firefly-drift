@@ -411,7 +411,7 @@ function boot() {
   initGfx(document.getElementById('game'));
   Input.init();
   Input.onAny = () => Sound.unlock();
-  addEventListener('pointerdown', () => Sound.unlock(), { passive: true });
+  for (const ev of ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown']) addEventListener(ev, () => Sound.unlock(), { passive: true });
   UI.init();
   G.onHidden = () => { if (G.mode === 'play' && !G.uiOpen) UI.open('s-pause'); };
   document.addEventListener('visibilitychange', () => { if (document.hidden) Sound.suspend(); else Sound.resume(); });

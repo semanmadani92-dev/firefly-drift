@@ -199,7 +199,13 @@ function explore(def, entry, ab, flags, mode) {
   let guard = 0;
   while (queue.length && guard++ < 4000) {
     const n = queue.shift();
-    for (const plan of P0) { const b = newBody(n.x, n.y); b.onGround = true; b.coyote = P.coyote; b.airJumps = ab.djump ? 1 : 0; run(b, plan); }
+    for (const plan of P0) {
+      const b = newBody(n.x, n.y);
+      b.vy = 40; moveBody(room, b, DT); // settle so onGround / groundType are real
+      if (!b.onGround) continue;
+      b.coyote = P.coyote; b.airJumps = ab.djump ? 1 : 0;
+      run(b, plan);
+    }
   }
   res.nodes = seen.size;
   cache.set(ck, res);
@@ -262,8 +268,9 @@ const allRooms = ALL_ROOMS.filter((d) => !d.hidden).map((d) => d.id);
 const allItems = []; for (const d of ALL_ROOMS) for (const e of d._ents) if (e.spec && e.spec.t === 'item') allItems.push(e.uid);
 let bad = 0;
 
-console.log('== Stage check: what can be reached with exactly these abilities ==');
-const stages = [[], ['dash'], ['dash', 'shot'], ['dash', 'shot', 'grip'], ['dash', 'shot', 'djump'], ['dash', 'shot', 'grip', 'djump'], ['dash', 'shot', 'grip', 'djump', 'slam'], ['dash', 'shot', 'grip', 'djump', 'slam', 'eclipse']];
+const STAGES = process.argv.includes('--stages');
+if (STAGES) console.log('== Stage check: what can be reached with exactly these abilities ==');
+const stages = !STAGES ? [] : [[], ['dash'], ['dash', 'shot'], ['dash', 'shot', 'grip'], ['dash', 'shot', 'djump'], ['dash', 'shot', 'grip', 'djump'], ['dash', 'shot', 'grip', 'djump', 'slam'], ['dash', 'shot', 'grip', 'djump', 'slam', 'eclipse']];
 let prev = new Set();
 for (const st of stages) {
   const fa = {}; for (const a of st) fa[a] = 1;
