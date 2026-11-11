@@ -559,7 +559,21 @@ function drawVesper(c, x, y, t) {
   c.fillStyle = '#eaf4ff'; ell(c, x - 3, y - 39 + bob, 1.4, 2); c.fill(); ell(c, x + 3, y - 39 + bob, 1.4, 2); c.fill();
   addLight(x, y - 34, 130, '#7fb8ff', 0.3, 0.85);
 }
-const NPC_DRAW = { tallow: drawTallow, sconce: drawSconce, vesper: drawVesper };
+function drawFolio(c, x, y, t) {
+  const bob = Math.sin(t * 2) * 1;
+  c.fillStyle = 'rgba(159,180,255,0.16)'; ell(c, x, y - 17 + bob, 17, 17); c.fill();
+  c.fillStyle = '#1c2a6a'; c.beginPath(); c.ellipse(x, y - 13 + bob, 15, 12, 0, 0, Math.PI); c.fill();
+  c.strokeStyle = '#8fa2ee'; c.lineWidth = 2; ell(c, x, y - 17 + bob, 17, 17); c.stroke();
+  c.fillStyle = '#27305e'; rrect(c, x - 7, y - 42 + bob, 14, 10, 3); c.fill();
+  c.fillStyle = '#8a6a48'; rrect(c, x - 5, y - 48 + bob, 10, 7, 2); c.fill();
+  drawFlame(c, x, y - 16 + bob, 11, '#7fb8ff', t + 3, '#eaf4ff');
+  c.fillStyle = '#eaf4ff'; ell(c, x - 6, y - 24 + bob, 1.6, 2.4); c.fill(); ell(c, x + 6, y - 24 + bob, 1.6, 2.4); c.fill();
+  // the little book it is always reading
+  c.fillStyle = '#5a3a2a'; rrect(c, x + 12, y - 18 + bob, 13, 10, 1.5); c.fill();
+  c.fillStyle = '#e8dcc0'; c.fillRect(x + 13.5, y - 16.5 + bob, 10, 7);
+  addLight(x, y - 18, 130, '#7fb8ff', 0.3, 0.85);
+}
+const NPC_DRAW = { tallow: drawTallow, sconce: drawSconce, vesper: drawVesper, folio: drawFolio };
 class Npc extends Entity {
   constructor(x, y, spec) {
     super(x - 20, y - 56, 40, 56);

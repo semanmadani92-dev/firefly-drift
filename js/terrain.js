@@ -325,15 +325,45 @@ export class TerrainLayer {
     for (let y = ty0; y <= ty1; y++) for (let x = tx0; x <= tx1; x++) {
       if (!isT(x, y)) continue;
       const r = hash2(x, y, seed + 31), r2 = hash2(x, y, seed + 37);
-      if (r < 0.42) {
-        g.fillStyle = rgba(A.rock2, 0.55 + r2 * 0.3);
-        g.beginPath(); g.ellipse(x * T + r2 * T, y * T + r * 2 * T, 14 + r2 * 22, 9 + r * 20, r2 * 3, 0, TAU); g.fill();
+      const X = x * T, Y = y * T, kind = A.deco;
+      if (kind === 'stacks') { // walls of drowned bookshelves
+        g.fillStyle = 'rgba(0,0,0,0.4)'; g.fillRect(X, Y + T - 3, T, 3);
+        let bx = X + 1;
+        for (let i = 0; i < 7 && bx < X + T - 2; i++) {
+          const h1 = hash2(x * 7 + i, y, seed + 41), bw = 3 + Math.floor(h1 * 4), bh = 16 + hash2(x, y * 7 + i, seed + 43) * 11;
+          g.fillStyle = rgba([A.rock2, A.rim, A.glowB, A.moss][Math.floor(h1 * 4)], 0.10 + h1 * 0.16);
+          g.fillRect(bx, Y + T - 3 - bh, bw, bh);
+          if (h1 > 0.7) { g.fillStyle = rgba(A.rim, 0.22); g.fillRect(bx, Y + T - 3 - bh + 4, bw, 1.4); }
+          bx += bw + 1;
+        }
+      } else if (kind === 'ember') { // riveted plates
+        g.fillStyle = rgba(A.rock2, 0.5 + r * 0.3); g.fillRect(X + 1, Y + 1, T - 2, T - 2);
+        g.strokeStyle = 'rgba(0,0,0,0.45)'; g.lineWidth = 1.5; g.strokeRect(X + 0.75, Y + 0.75, T - 1.5, T - 1.5);
+        g.fillStyle = rgba(A.rim, 0.22);
+        g.fillRect(X + 4, Y + 4, 2, 2); g.fillRect(X + T - 6, Y + 4, 2, 2); g.fillRect(X + 4, Y + T - 6, 2, 2); g.fillRect(X + T - 6, Y + T - 6, 2, 2);
+        if (r > 0.93) { g.strokeStyle = rgba(A.glowB, 0.55); g.lineWidth = 1.4; g.beginPath(); g.moveTo(X + 6 + r2 * 8, Y + 6); g.lineTo(X + 14 + r2 * 6, Y + 16); g.lineTo(X + 10 + r2 * 10, Y + 27); g.stroke(); }
+      } else if (kind === 'crystal') { // facets
+        g.fillStyle = rgba(A.rock2, 0.4 + r * 0.4);
+        g.beginPath(); if (r2 < 0.5) { g.moveTo(X, Y); g.lineTo(X + T, Y); g.lineTo(X, Y + T); } else { g.moveTo(X + T, Y); g.lineTo(X + T, Y + T); g.lineTo(X, Y + T); } g.closePath(); g.fill();
+        g.strokeStyle = rgba(r < 0.5 ? A.glowA : A.glowB, 0.08 + r2 * 0.08); g.lineWidth = 1;
+        g.beginPath(); g.moveTo(X + T, Y); g.lineTo(X, Y + T); g.stroke();
+        if (r > 0.94) { g.fillStyle = rgba('#ffffff', 0.6); g.fillRect(X + r2 * 28, Y + r2 * 23, 1.6, 1.6); }
+      } else if (kind === 'orrery') { // engraved arcs and star-points
+        if (r < 0.5) { g.fillStyle = rgba(A.rock2, 0.5); g.fillRect(X, Y, T, T); }
+        g.strokeStyle = rgba(A.rim, 0.10 + r2 * 0.08); g.lineWidth = 1;
+        g.beginPath(); g.arc(X + (r < 0.5 ? 0 : T), Y + (r2 < 0.5 ? 0 : T), T * (0.5 + r * 0.5), 0, TAU); g.stroke();
+        if (r > 0.9) { g.fillStyle = rgba(A.glowA, 0.7); g.fillRect(X + r2 * 28, Y + r2 * 23, 1.8, 1.8); }
+      } else { // forest: mottled earth and root
+        if (r < 0.42) {
+          g.fillStyle = rgba(A.rock2, 0.55 + r2 * 0.3);
+          g.beginPath(); g.ellipse(X + r2 * T, Y + r * 2 * T, 14 + r2 * 22, 9 + r * 20, r2 * 3, 0, TAU); g.fill();
+        }
+        if (r2 < 0.3) {
+          g.strokeStyle = 'rgba(0,0,0,0.28)'; g.lineWidth = 1.5;
+          g.beginPath(); g.moveTo(X + r * 20, Y + r2 * 60); g.lineTo(X + r * 20 + 10 + r2 * 30, Y + r2 * 60 + (r - 0.2) * 10); g.stroke();
+        }
+        if (r > 0.965) { g.fillStyle = rgba(A.rim, 0.55); g.fillRect(X + r2 * 28, Y + r2 * 23, 1.6, 1.6); }
       }
-      if (r2 < 0.3) {
-        g.strokeStyle = 'rgba(0,0,0,0.28)'; g.lineWidth = 1.5;
-        g.beginPath(); g.moveTo(x * T + r * 20, y * T + r2 * 60); g.lineTo(x * T + r * 20 + 10 + r2 * 30, y * T + r2 * 60 + (r - 0.2) * 10); g.stroke();
-      }
-      if (r > 0.965) { g.fillStyle = rgba(A.rim, 0.55); g.fillRect(x * T + r2 * 28, y * T + r2 * 23, 1.6, 1.6); }
     }
     // inner rim light: the shadow of everything that is NOT terrain bleeds inward
     g.fillStyle = '#000';

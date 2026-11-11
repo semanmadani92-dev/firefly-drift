@@ -38,8 +38,9 @@ export function registerRooms(list) {
         const ch = row[x] || '#';
         if (ch in TILE_CH) tiles[y * def.w + x] = TILE_CH[ch];
         else {
-          tiles[y * def.w + x] = TILE.EMPTY;
-          ents.push({ ch, tx: x, ty: y, spec: key[ch] || null, uid: `${def.id}:${x},${y}` });
+          const sp = key[ch] || null;
+          tiles[y * def.w + x] = sp && sp.tile ? TILE_CH[sp.tile] : TILE.EMPTY;
+          ents.push({ ch, tx: x, ty: y, spec: sp, uid: `${def.id}:${x},${y}` });
         }
       }
     }

@@ -109,6 +109,8 @@ function plans(ab, mode, b0) {
       add(`climb${d}`, (t, b, st) => { const kick = b.wallDir && !st.lock; if (kick) st.lock = 4; else if (st.lock) st.lock--; return { mx: d, press: t < DT || kick, jump: true }; }, 6);
       // zig-zag between two walls
       add(`zig${d}`, (t, b, st) => { if (st.d === undefined) st.d = d; let press = t < DT; if (b.wallDir) { press = true; st.d = -b.wallDir; } return { mx: st.d, press, jump: true }; }, 6);
+      // hop out from a ledge, then curl back onto the wall above it
+      add(`hook${d}`, (t, b, st) => { const kick = b.wallDir && !st.lock; if (kick) st.lock = 4; else if (st.lock) st.lock--; return { mx: t < 0.15 ? -d : d, press: t < DT || kick, jump: true }; }, 7);
       add(`fallgrip${d}`, (t, b, st) => { const kick = b.wallDir && !st.lock; if (kick) st.lock = 4; else if (st.lock) st.lock--; return { mx: d, press: kick, jump: true }; }, 6);
       if (ab.djump) add(`climbdj${d}`, (t, b, st) => { const kick = b.wallDir && !st.lock; if (kick) st.lock = 4; else if (st.lock) st.lock--; const dj = !b.wallDir && !b.onGround && b.vy > 80 && b.airJumps > 0; return { mx: d, press: t < DT || kick || dj, jump: true }; }, 6);
     }
@@ -245,9 +247,10 @@ function solve(mode, fixedAb) {
       for (const uid of r.pois) {
         const e = def._ents.find((q) => q.uid === uid), s = typeof e.spec === 'string' ? { t: e.spec } : e.spec;
         if (s.t === 'item' && !items.has(uid)) { items.add(uid); changed = true; }
-        if (!fixedAb) {
-          if (s.t === 'shrine' && !ab[s.ability]) { ab[s.ability] = 1; log.push(`${s.ability} (shrine in ${def.id})`); changed = true; }
-          if (s.t === 'boss' && !flags['boss_' + s.id]) { flags['boss_' + s.id] = 1; log.push(`boss ${s.id} (${def.id})`); if (s.reward && s.reward.ability && !ab[s.reward.ability]) { ab[s.reward.ability] = 1; log.push(`${s.reward.ability} (reward)`); } changed = true; }
+        if (!fixedAb && s.t === 'shrine' && !ab[s.ability]) { ab[s.ability] = 1; log.push(`${s.ability} (shrine in ${def.id})`); changed = true; }
+        if (s.t === 'boss' && !flags['boss_' + s.id]) {
+          flags['boss_' + s.id] = 1; log.push(`boss ${s.id} (${def.id})`); changed = true;
+          if (!fixedAb && s.reward && s.reward.ability && !ab[s.reward.ability]) { ab[s.reward.ability] = 1; log.push(`${s.reward.ability} (reward)`); }
         }
         if (s.t === 'lever' && !flags[s.flag]) { flags[s.flag] = 1; log.push(`lever ${s.flag} (${def.id})`); changed = true; }
         if (s.t === 'crystal' && !flags[s.flag] && (!s.shotOnly || ab.shot)) { flags[s.flag] = 1; log.push(`crystal ${s.flag} (${def.id})`); changed = true; }
@@ -290,6 +293,22 @@ const missingItems = allItems.filter((i) => !full.items.has(i));
 if (missingRooms.length) { bad++; console.log('UNREACHABLE rooms: ' + missingRooms.join(' ')); }
 if (missingItems.length) console.log('items not reachable yet (may need abilities from later areas): ' + missingItems.join(' '));
 console.log(`rooms ${full.rooms.size}/${allRooms.length}, items ${full.items.size}/${allItems.length}, abilities: ${Object.keys(full.ab).join(' ') || 'none'}`);
+
+// Ability gates that must hold even against frame-perfect play.
+const GATES = [
+  { name: 'Gloamwood dash gaps', have: [], cannot: ['g6', 'g7', 'g8', 'gB'] },
+  { name: 'the Spine needs the Quillhook', have: ['dash', 'shot'], cannot: ['sB', 's8'] },
+];
+if (process.argv.includes('--gates')) {
+  console.log('\n== Gate checks (frame-perfect play) ==');
+  for (const g of GATES) {
+    const fa = {}; for (const a of g.have) fa[a] = 1;
+    const r = solve('perfect', fa);
+    const leak = g.cannot.filter((id) => r.rooms.has(id));
+    if (leak.length) { bad++; console.log(`BROKEN  ${g.name}: with [${g.have.join('+') || 'nothing'}] you can still reach ${leak.join(' ')}`); }
+    else console.log(`ok      ${g.name}`);
+  }
+}
 
 console.log('\n== Sequence-break check (perfect jumps, no abilities) ==');
 const pb = solve('perfect', {});

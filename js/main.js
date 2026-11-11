@@ -12,6 +12,7 @@ import { UI } from './ui.js';
 import { LostLight } from './entities.js';
 import './enemies.js';
 import './bosses.js';
+import './enemies2.js';
 import { NPCS } from './data/text.js';
 import { ALL_ROOMS, START_ROOM, TITLE_ROOM } from './data/rooms.js';
 import { rand, pick, hash2, rgba, clamp, approach } from './util.js';
