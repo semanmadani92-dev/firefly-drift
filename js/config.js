@@ -54,7 +54,7 @@ export const AREAS = {
   ember: {
     name: 'Emberworks', sub: 'The Forge That Would Not Cool',
     sky: ['#120502', '#2a0c06', '#4a1808'], rock: '#1c0d0a', rock2: '#2c1510', rim: '#ff9440', moss: '#c0501c',
-    glowA: '#ffae5a', glowB: '#ff5a3a', ambient: [12, 4, 2, 0.58], deco: 'ember', back: 'ember', music: 'ember', map: '#ff9440',
+    glowA: '#ffae5a', glowB: '#ff5a3a', ambient: [12, 4, 2, 0.58], deco: 'ember', back: 'ember', music: 'ember', map: '#ff9440', liquid: '#ff6a2a',
     motes: ['#ffae5a', '#ff6a3a'],
   },
   starwell: {

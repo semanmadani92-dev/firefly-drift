@@ -105,6 +105,21 @@ export const NPCS = {
       return ['Down the Spine, into the hall of hooks, then back the long way round through the Ink Well. Mind the eels.'];
     },
   },
+  flint: {
+    name: 'Flint',
+    smith: true,
+    lines(S) {
+      if (!S.flags.met_flint) return [
+        'Hm. A lantern. Walking. On purpose. Do not see that often any more.',
+        'Flint. Smith. I keep this one forge cool enough to work at, which is more than can be said for the rest of the place.',
+        'That matchblade of yours is a kitchen match. I can fold moonlight into it, if you bring me a Moon Shard - they came down with the Moon, in the deep places - and enough motes to feed the fire.',
+        'East of here a bellows has been holding its breath for a thousand years. Take that breath and you will jump twice. You will need to, if you mean to reach the Forgeheart.',
+      ];
+      if (S.blade >= 4) return ['That blade is as hot as I can make it. Go and point it at something that deserves it.'];
+      if (S.flags.boss_hammerwright) return ['The hammering has stopped. First quiet I have heard in... I do not know how long. Bring shards, little flame. I have time now.'];
+      return ['Shard and motes, and I will make that match of yours into something worth swinging.'];
+    },
+  },
   vesper: {
     name: 'Vesper',
     lines(S) {
@@ -120,6 +135,9 @@ export const NPCS = {
 };
 
 export const TABLETS = {
+  cooling: { title: 'Soot-Black Stone', text: ['"The Emberworks forged the frame that held the Moon in the sky."', '"When it fell, we were told to let the fires die. The fires were not told."'] },
+  bellows: { title: 'Brass-Bound Stone', text: ['"The first bellows drew one breath and has been holding it ever since."', '"Take it. Something should finally come of all that waiting."'] },
+  works: { title: 'Foreman\'s Stone', text: ['"The Hammerwright does not stop. It was never taught how."', '"It is still forging a new Moon. It has been getting the shape wrong for a thousand years."'] },
   drowned: { title: 'Water-Stained Stone', text: ['"The Stacks held every word ever written by lamplight."', '"When the Moon fell the lake came in after it. The ink ran, and the words went looking for readers."'] },
   pages: { title: 'Catalogue Stone', text: ['"Shelf nine thousand and four: songs for a Moon that is listening."', '"Shelf nine thousand and five: apologies."'] },
   hooks: { title: 'Pinned Stone', text: ['"The mapmakers climbed these shelves on hooks of quill, and never once looked down."', '"The ones who looked down are still there. Mind the ink."'] },
@@ -131,6 +149,11 @@ export const TABLETS = {
 };
 
 export const BESTIARY = {
+  cinderling: { name: 'Cinderling', desc: 'A coal with legs and no patience. It runs straight at anything cooler than itself.' },
+  bellowsback: { name: 'Bellowsback', desc: 'It breathes in for a long moment. Be somewhere else when it breathes out.' },
+  emberfly: { name: 'Emberfly', desc: 'It carries slag from the furnaces and lets go of it directly above whoever looks up.' },
+  tinknight: { name: 'Tin Knight', desc: 'A suit of plate still walking its rounds. Its hammer is slow. Its hammer is also very large.' },
+  hammerwright: { name: 'The Hammerwright', desc: 'Last smith of the Emberworks, still trying to forge a Moon that will stay up.' },
   inkblot: { name: 'Inkblot', desc: 'A paragraph that slid off its page. Strike it and it comes apart into smaller, angrier sentences.' },
   quill: { name: 'Quill', desc: 'It takes careful aim, then writes a single straight line through whatever is standing there.' },
   tome: { name: 'Tomewing', desc: 'A book that learned to fly and forgot how to be quiet. It spits its own letters.' },

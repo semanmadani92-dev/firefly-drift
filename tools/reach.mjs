@@ -139,6 +139,16 @@ function explore(def, entry, ab, flags, mode) {
     const th = s.h || 3, tw = s.w || 1;
     room.solids.push({ solid: true, x: e.tx * T, y: (e.ty + 1 - th) * T, w: tw * T, h: th * T });
   }
+  for (const e of def._ents) {
+    const s = e.spec; if (!s) continue;
+    if (s.t === 'lift') {
+      const w = (s.w || 3) * T;
+      const a = { solid: true, x: e.tx * T, y: e.ty * T, w, h: 12 };
+      const z = { solid: true, x: a.x + (s.dx || 0) * T, y: a.y + (s.dy || 0) * T, w, h: 12 };
+      a.other = z; z.other = a; room.solids.push(a, z);
+    } else if (s.t === 'crumble') room.solids.push({ solid: true, x: e.tx * T, y: e.ty * T, w: (s.w || 2) * T, h: 12 });
+    else if (s.t === 'barrier' && !ab.eclipse) room.solids.push({ solid: true, x: e.tx * T + 8, y: (e.ty + 1 - (s.h || 3)) * T, w: 16, h: (s.h || 3) * T });
+  }
   const pois = def._ents.filter((e) => e.spec && POI_TYPES.has(typeof e.spec === 'string' ? e.spec : e.spec.t)).map((e) => ({ uid: e.uid, x: e.tx * T - 14, y: (e.ty - 1) * T, w: T + 28, h: T * 2 + 6 }));
   const res = { exits: new Set(), pois: new Set(), breaks: new Set(), nodes: 0 };
   const seen = new Set(), queue = [];
@@ -156,6 +166,11 @@ function explore(def, entry, ab, flags, mode) {
     const k = nodeKey(b);
     if (seen.has(k)) return;
     seen.add(k); queue.push({ x: b.x, y: b.y });
+    if (b.groundEnt && b.groundEnt.other) { // riding a lift takes you to its other stop
+      const s = b.groundEnt, o = s.other, nb = { x: b.x + (o.x - s.x), y: o.y - b.h };
+      const k2 = nodeKey(nb);
+      if (!seen.has(k2)) { seen.add(k2); queue.push(nb); }
+    }
     // hollow walls within blade reach
     const ty0 = Math.floor(b.y / T), ty1 = Math.floor((b.y + b.h - 1) / T);
     for (let ty = ty0 - 1; ty <= ty1; ty++) for (const tx of [Math.floor((b.x - 40) / T), Math.floor((b.x + b.w + 40) / T), Math.floor((b.x - 14) / T), Math.floor((b.x + b.w + 14) / T)]) {
@@ -298,6 +313,7 @@ console.log(`rooms ${full.rooms.size}/${allRooms.length}, items ${full.items.siz
 const GATES = [
   { name: 'Gloamwood dash gaps', have: [], cannot: ['g6', 'g7', 'g8', 'gB'] },
   { name: 'the Spine needs the Quillhook', have: ['dash', 'shot'], cannot: ['sB', 's8'] },
+  { name: 'the Forgeheart needs Second Wind or the Quillhook', have: ['dash', 'shot'], cannot: ['eB'] },
 ];
 if (process.argv.includes('--gates')) {
   console.log('\n== Gate checks (frame-perfect play) ==');

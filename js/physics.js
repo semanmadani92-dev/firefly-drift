@@ -20,6 +20,7 @@ export function moveBody(room, b, dt) {
   b.hitL = b.hitR = b.hitCeil = false;
   b.onGround = false;
   b.groundType = 0;
+  b.groundEnt = null;
   const solids = room.solids || [];
 
   // ---- horizontal
@@ -71,7 +72,7 @@ export function moveBody(room, b, dt) {
   for (let i = 0; i < solids.length; i++) {
     const s = solids[i];
     if (!s.solid || s === b || !boxHit(b, s)) continue;
-    if (dy >= 0) { b.y = s.y - b.h; b.onGround = true; if (!b.groundType) b.groundType = TILE.SOLID; } else { b.y = s.y + s.h; b.hitCeil = true; }
+    if (dy >= 0) { b.y = s.y - b.h; b.onGround = true; b.groundEnt = s; if (!b.groundType) b.groundType = TILE.SOLID; } else { b.y = s.y + s.h; b.hitCeil = true; }
     b.vy = 0;
   }
 }

@@ -573,11 +573,25 @@ function drawFolio(c, x, y, t) {
   c.fillStyle = '#e8dcc0'; c.fillRect(x + 13.5, y - 16.5 + bob, 10, 7);
   addLight(x, y - 18, 130, '#7fb8ff', 0.3, 0.85);
 }
-const NPC_DRAW = { tallow: drawTallow, sconce: drawSconce, vesper: drawVesper, folio: drawFolio };
+function drawFlint(c, x, y, t) {
+  c.fillStyle = '#2a1c1a'; c.fillRect(x - 14, y - 6, 9, 6); c.fillRect(x + 5, y - 6, 9, 6);
+  c.fillStyle = '#3a2622'; rrect(c, x - 18, y - 44, 36, 40, 9); c.fill();
+  c.strokeStyle = '#7a5648'; c.lineWidth = 1.8; rrect(c, x - 18, y - 44, 36, 40, 9); c.stroke();
+  c.fillStyle = '#ff9440'; rrect(c, x - 10, y - 26, 20, 12, 3); c.fill();
+  c.fillStyle = '#3a2622'; for (let i = 0; i < 3; i++) c.fillRect(x - 6 + i * 6, y - 26, 2.4, 12);
+  c.fillStyle = '#ffd98a'; ell(c, x - 7, y - 34, 2.4, 2.4); c.fill(); ell(c, x + 7, y - 34, 2.4, 2.4); c.fill();
+  c.fillStyle = '#2a1c1a'; c.fillRect(x - 5, y - 54, 10, 11);
+  // hammer resting on the shoulder
+  c.strokeStyle = '#6a4a40'; c.lineWidth = 3.5; c.beginPath(); c.moveTo(x + 16, y - 22); c.lineTo(x + 28, y - 52); c.stroke();
+  c.fillStyle = '#2a1c1a'; rrect(c, x + 19, y - 62, 20, 12, 3); c.fill();
+  if (Math.random() < 0.08) spawnP({ x: x + rand(-3, 3), y: y - 54, vy: -rand(30, 80), vx: rand(-10, 10), life: rand(0.5, 1), size: 1.8, color: '#ffae5a', wob: 30 });
+  addLight(x, y - 22, 130, '#ff9440', 0.32, 0.9);
+}
+const NPC_DRAW = { tallow: drawTallow, sconce: drawSconce, vesper: drawVesper, folio: drawFolio, flint: drawFlint };
 class Npc extends Entity {
   constructor(x, y, spec) {
     super(x - 20, y - 56, 40, 56);
-    this.type = 'npc'; this.id = spec.id; this.bx = x; this.by = y; this.prompt = NPCS[spec.id].shop ? 'Trade' : 'Talk'; this.reach = 52; this.layer = 0;
+    this.type = 'npc'; this.id = spec.id; this.bx = x; this.by = y; this.prompt = NPCS[spec.id].shop ? 'Trade' : NPCS[spec.id].smith ? 'Smith' : 'Talk'; this.reach = 52; this.layer = 0;
   }
   interact() { G.game.talk(this.id); }
   draw(c) { (NPC_DRAW[this.id] || drawVesper)(c, this.bx, this.by, G.now); }

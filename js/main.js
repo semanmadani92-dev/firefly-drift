@@ -7,12 +7,14 @@ import { loadSettings, newSave, readSlot, writeSave, lastSlot, setFlag } from '.
 import { initGfx, ctx, view, updateCamera, drawLighting, drawVignette, updateParticles, drawParticles, clearParticles, spawnP, burst, ring, shake, onResize, addLight } from './gfx.js';
 import { ROOMS, Room, registerRooms, neighborFor, cellOf } from './world.js';
 import { TerrainLayer, drawBackdrop, HAZ } from './terrain.js';
-import { Player } from './player.js';
+import { Player, BLADE_DMG } from './player.js';
 import { UI } from './ui.js';
 import { LostLight } from './entities.js';
 import './enemies.js';
 import './bosses.js';
 import './enemies2.js';
+import './enemies3.js';
+import './entities2.js';
 import { NPCS } from './data/text.js';
 import { ALL_ROOMS, START_ROOM, TITLE_ROOM } from './data/rooms.js';
 import { rand, pick, hash2, rgba, clamp, approach } from './util.js';
@@ -161,6 +163,22 @@ const game = {
     UI.dialog(n.name, n.lines(G.save), () => {
       setFlag('met_' + id);
       if (n.shop) UI.openShop(n.shop);
+      else if (n.smith) this.smith(n.name);
+    });
+  },
+
+  // The smith folds Moon Shards into the matchblade.
+  smith(name) {
+    const S = G.save, cost = [200, 350, 500, 700][S.blade];
+    if (S.blade >= 4) { UI.toast('Your matchblade can burn no hotter.'); return; }
+    if (S.shards < 1) { UI.toast('Bring a Moon Shard and motes, and the smith will reforge your matchblade.', name, 4200); return; }
+    if (S.motes < cost) { UI.toast(`The smith asks ${cost} motes to fold in your Moon Shard. You have ${S.motes}.`, name, 4200); return; }
+    UI.confirm('Reforge the matchblade?', `One Moon Shard and ${cost} motes. Each strike will deal ${BLADE_DMG[S.blade + 1]} instead of ${BLADE_DMG[S.blade]}.`, 'Reforge', () => {
+      S.shards--; S.motes -= cost; S.blade++;
+      Sound.play('big'); shake(6, 0.4);
+      G.flash.a = 0.6; G.flash.color = '#ffcf7a';
+      UI.toast('Your matchblade burns hotter.', 'Reforged', 3600);
+      writeSave();
     });
   },
 
@@ -304,13 +322,14 @@ function drawDynamicTiles(c, room, cam) {
     const X = tx * T, Y = ty * T;
     if (t === TILE.LIQUID) {
       const top = room.tile(tx, ty - 1) !== TILE.LIQUID;
-      c.fillStyle = rgba(HAZ, 0.3); c.fillRect(X, Y + (top ? 8 : 0), T, T - (top ? 8 : 0));
+      const LQ = A.liquid || HAZ;
+      c.fillStyle = rgba(LQ, 0.34); c.fillRect(X, Y + (top ? 8 : 0), T, T - (top ? 8 : 0));
       c.fillStyle = 'rgba(20,4,16,0.5)'; c.fillRect(X, Y + (top ? 14 : 0), T, T - (top ? 14 : 0));
       if (top) {
-        c.strokeStyle = '#ffc0d0'; c.lineWidth = 2; c.beginPath();
+        c.strokeStyle = A.liquid ? '#ffe9b0' : '#ffc0d0'; c.lineWidth = 2; c.beginPath();
         for (let i = 0; i <= 4; i++) { const xx = X + i * 8, yy = Y + 8 + Math.sin(G.now * 2.4 + xx * 0.06) * 2.2; if (i) c.lineTo(xx, yy); else c.moveTo(xx, yy); }
         c.stroke();
-        if ((tx & 1) === 0) addLight(X + 16, Y + 10, 70, HAZ, 0.22, 0.4);
+        if ((tx & 1) === 0) addLight(X + 16, Y + 10, A.liquid ? 96 : 70, LQ, A.liquid ? 0.3 : 0.22, 0.45);
       }
     } else {
       const h1 = hash2(tx, ty, 91), h2 = hash2(tx, ty, 97);

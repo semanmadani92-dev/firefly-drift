@@ -31,7 +31,8 @@ registerRooms(ALL_ROOMS);
 const passable = (t) => t === TILE.EMPTY || t === TILE.ONEWAY;
 const tileOf = (def, x, y) => def._tiles[y * def.w + x];
 const known = new Set(['start', 'lantern', 'geode', 'dewbloom', 'item', 'shrine', 'hint', 'tablet', 'gate', 'lever', 'crystal', 'npc', 'prop', 'boss',
-  'mossback', 'snuffling', 'kite', 'spitter', 'brute', 'inkblot', 'quill', 'tome', 'eel', 'sentinel']);
+  'mossback', 'snuffling', 'kite', 'spitter', 'brute', 'inkblot', 'quill', 'tome', 'eel', 'sentinel',
+  'jet', 'lift', 'saw', 'crumble', 'barrier', 'cinderling', 'bellowsback', 'emberfly', 'tinknight']);
 
 for (const def of ALL_ROOMS) {
   for (const e of def._ents) {
