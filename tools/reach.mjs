@@ -1,4 +1,4 @@
-// Reachability solver. Run with:  node tools/reach.mjs [-v]
+// Reachability solver. Run with:  node tools/reach.mjs [--gates] [--stages] [--kit=a,b,c] [-v]
 // Simulates the real player physics inside every room to work out which doors,
 // items and shrines can be reached with which abilities, then walks the whole
 // world from the start to confirm the game can be finished and that ability
@@ -285,6 +285,15 @@ function solve(mode, fixedAb) {
 const allRooms = ALL_ROOMS.filter((d) => !d.hidden).map((d) => d.id);
 const allItems = []; for (const d of ALL_ROOMS) for (const e of d._ents) if (e.spec && e.spec.t === 'item') allItems.push(e.uid);
 let bad = 0;
+
+// --kit=dash,shot,...  : one quick check of what a fixed set of abilities can reach
+const KIT = process.argv.find((a) => a.startsWith('--kit='));
+if (KIT) {
+  const fa = {}; for (const a of KIT.slice(6).split(',')) if (a) fa[a] = 1;
+  const r = solve('easy', fa), miss = allRooms.filter((id) => !r.rooms.has(id));
+  console.log(`[${KIT.slice(6)}] rooms ${r.rooms.size}/${allRooms.length}` + (miss.length ? '  cannot reach: ' + miss.join(' ') : '  everything reachable'));
+  process.exit(0);
+}
 
 const STAGES = process.argv.includes('--stages');
 if (STAGES) console.log('== Stage check: what can be reached with exactly these abilities ==');
